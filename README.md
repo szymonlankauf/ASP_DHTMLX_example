@@ -21,3 +21,30 @@ Transfer-Encoding: chunked
 
 Hello World!
 ```
+
+To connect with database type
+
+```
+sqlcmd -S localhost -U SA -P 'qqqqqqQ1'
+```
+
+To show datbases
+
+```
+SELECT Name from sys.Databases
+GO
+```
+
+To switch to our database
+
+```
+use PersonalDB
+GO
+```
+
+To show content of table
+
+```
+SELECT * FROM Inventory
+GO
+```
