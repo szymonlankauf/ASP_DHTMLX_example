@@ -18,6 +18,22 @@ namespace WebApplication1
         {
         }
         
+        // Appdend "Content-Type: application/xml" header
+        private void addHeader(IApplicationBuilder app)
+        {
+            app.Use(async (context, nextMiddleware) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    context.Response.Headers.Add("Content-Type", "application/xml");
+//          context.Response.Headers.Add("Access-Control-Allow-Origin", "http://127.0.0.1:8080");
+                    return Task.FromResult(0);
+                });
+                await nextMiddleware();
+            });
+        }
+        
+        // create string with response from data readere
         private static string WriteResponse(SqlDataReader dataReader)
         {
             string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><root>";
@@ -32,6 +48,7 @@ namespace WebApplication1
             return response;
         }
         
+        // establish connection and get result of execution of sql with additional xml tags 
         private string ConnectAndGetResponse(string connetionString, string sql)
         {
             SqlConnection connection = new SqlConnection(connetionString);
@@ -61,6 +78,7 @@ namespace WebApplication1
 
             try
             {
+                this.addHeader(app);
                 string response = this.ConnectAndGetResponse(connetionString, sql);
 
                 app.Run(async (context) => { await context.Response.WriteAsync(response); });
