@@ -1,3 +1,5 @@
+# Backend
+
 To start
 
 ```
@@ -27,7 +29,26 @@ Transfer-Encoding: chunked
 </root>
 ```
 
-[![Zrzut_ekranu_z_2018-04-28_16-25-18.png](https://s14.postimg.cc/u3ac541jl/Zrzut_ekranu_z_2018-04-28_16-25-18.png)](https://postimg.cc/image/pu5m2xya5/)
+[![backend.png](https://s14.postimg.cc/l9jfnnrc1/Zrzut_ekranu_z_2018-04-28_16-29-39.png)](https://postimg.cc/image/bozt0s1zx/)
+
+# Frontend
+
+To start frontend type in other console
+
+```
+cd public
+http-server
+```
+
+And you can go to address `localhost:8080` in your likest browser.
+If you do not have http-server install it by `npm install -g http-server`
+
+You should see table like this
+
+[![frontend.png](https://s14.postimg.cc/u3ac541jl/Zrzut_ekranu_z_2018-04-28_16-25-18.png)](https://postimg.cc/image/pu5m2xya5/)
+
+
+# Database
 
 To connect with database type
 

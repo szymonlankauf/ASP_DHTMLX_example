@@ -16,6 +16,7 @@ namespace WebApplication1
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
         }
         
         // Appdend "Content-Type: application/xml" header
@@ -72,6 +73,10 @@ namespace WebApplication1
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseCors(builder =>
+                builder.WithOrigins("*")
+                    .AllowAnyHeader());
 
             string connetionString = "Data Source=localhost;Initial Catalog=PersonalDB;User ID=SA;Password=qqqqqqQ1";
             string sql = "SELECT * FROM Inventory FOR XML RAW";
