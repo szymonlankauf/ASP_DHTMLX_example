@@ -1,15 +1,51 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <title>Loading from XML</title>
+    <link rel="stylesheet" type="text/css" href="http://cdn.dhtmlx.com/edge/dhtmlx.css">
+    <style>
+        #tblToGrid {
+            width: 400px
+        }
+    </style>
+</head>
 <body>
+<table id="tblToGrid" name="grid1" gridHeight="auto" border="1" lightnavigation="true">
 
-<pre></pre>
+</table>
+
+<script src="http://cdn.dhtmlx.com/edge/dhtmlx.js"></script>
 
 <script>
+
     fetch('http://localhost:5000')
         .then(res => res.text())
         .then(data => {
-            document.querySelector('pre').innerText = data;
-        }
-    )
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, "text/xml");
+
+                let tableContent = `<tr>
+                    <td type="ro">Column 1</td>
+                    <td>Column 2</td>
+                </tr>`;
+
+                [...xmlDoc.firstElementChild.children].forEach(e => {
+                    tableContent +=
+                        `<tr>
+                            <td>${e.id}</td>
+                            <td>${e.attributes[1].value}</td>
+                        </tr>`
+                });
+
+                document.querySelector('#tblToGrid').innerHTML = tableContent;
+
+                new dhtmlXGridFromTable('tblToGrid');
+
+            }
+        );
+
+
 </script>
 </body>
 </html>
