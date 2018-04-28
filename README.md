@@ -27,6 +27,16 @@ Transfer-Encoding: chunked
 </root>
 ```
 
+To start frontend type in other console
+
+```
+cd public
+http-server
+```
+
+And you can go to address `localhost:8080` in your likest browser.
+If you do not have http-server install it by `npm install -g http-server`
+
 To connect with database type
 
 ```

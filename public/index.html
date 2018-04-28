@@ -1,0 +1,15 @@
+<html>
+<body>
+
+<pre></pre>
+
+<script>
+    fetch('http://localhost:5000')
+        .then(res => res.text())
+        .then(data => {
+            document.querySelector('pre').innerText = data;
+        }
+    )
+</script>
+</body>
+</html>
