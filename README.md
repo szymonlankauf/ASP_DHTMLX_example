@@ -27,6 +27,8 @@ Transfer-Encoding: chunked
 </root>
 ```
 
+[![Zrzut_ekranu_z_2018-04-28_16-25-18.png](https://s14.postimg.cc/u3ac541jl/Zrzut_ekranu_z_2018-04-28_16-25-18.png)](https://postimg.cc/image/pu5m2xya5/)
+
 To connect with database type
 
 ```
