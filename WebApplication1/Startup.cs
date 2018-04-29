@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -88,11 +86,19 @@ namespace WebApplication1
                 this.addHeader(app);
                 string response = this.ConnectAndGetResponse(connetionString, sql);
 
+                
+                app.MapWhen(context => context.Request.Method == "PUT", mapApp =>
+                {
+                    mapApp.Run(async context =>
+                    {
+                        await context.Response.WriteAsync("Hello World!");
+                    });
+                });
+                
                 app.Run(async (context) => { await context.Response.WriteAsync(response); });
             }
             catch (Exception ex)
             {
-//        Console.WriteLine("Can not open connection! ");
                 app.Run(async (context) => { await context.Response.WriteAsync("Can not open connection! "); });
             }
             
