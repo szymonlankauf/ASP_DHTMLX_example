@@ -31,6 +31,12 @@ Transfer-Encoding: chunked
 
 [![backend.png](https://s14.postimg.cc/l9jfnnrc1/Zrzut_ekranu_z_2018-04-28_16-29-39.png)](https://postimg.cc/image/bozt0s1zx/)
 
+To update data in backend you need send PUT requst like this:
+
+http -vf PUT http://localhost:5000 id=5 firstName="Szymon" lastName="Lankauf" pesel="15245698536"
+
+Now backend only sends back ID. Saving data to database will be introduced in future.
+
 # Frontend
 
 To start frontend type in other console

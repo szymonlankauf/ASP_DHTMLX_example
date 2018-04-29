@@ -32,6 +32,8 @@ namespace WebApplication1
             });
         }
         
+        
+        
         // create string with response from data readere
         private static string WriteResponse(SqlDataReader dataReader)
         {
@@ -91,7 +93,7 @@ namespace WebApplication1
                 {
                     mapApp.Run(async context =>
                     {
-                        await context.Response.WriteAsync("Hello World!");
+                        await context.Response.WriteAsync(context.Request.Form["id"]);
                     });
                 });
                 
