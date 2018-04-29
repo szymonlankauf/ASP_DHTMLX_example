@@ -27,7 +27,7 @@ namespace WebApplication1
                 context.Response.OnStarting(() =>
                 {
                     context.Response.Headers.Add("Content-Type", "application/xml");
-//          context.Response.Headers.Add("Access-Control-Allow-Origin", "http://127.0.0.1:8080");
+//                    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                     return Task.FromResult(0);
                 });
                 await nextMiddleware();
@@ -76,10 +76,12 @@ namespace WebApplication1
             
             app.UseCors(builder =>
                 builder.WithOrigins("*")
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                );
 
             string connetionString = "Data Source=localhost;Initial Catalog=PersonalDB;User ID=SA;Password=qqqqqqQ1";
-            string sql = "SELECT * FROM Inventory FOR XML RAW";
+            string sql = "SELECT id AS cell, firstName AS cell, lastName AS cell, pesel AS cell FROM Inventory AS row FOR XML AUTO, ROOT('rows'), ELEMENTS";
 
             try
             {
