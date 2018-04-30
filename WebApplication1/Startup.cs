@@ -16,7 +16,7 @@ namespace WebApplication1
         {
             services.AddCors();
         }
-        
+
         // Appdend "Content-Type: application/xml" header
         private void addHeader(IApplicationBuilder app)
         {
@@ -31,8 +31,30 @@ namespace WebApplication1
                 await nextMiddleware();
             });
         }
-        
-        
+
+        private string BuildUpdateQuery(string id, string firstName, string lastName, string pesel)
+        {
+//            UPDATE table_name
+//            SET column1 = value1, column2 = value2, ...
+//            WHERE condition; 
+            return "UPDATE Inventory SET firstName='"+firstName+"', lastName='"+lastName+"', pesel='"+pesel+"' WHERE id='"+id+"';";
+        }
+
+        private string ConnectAndUpdate(string connetionString, string sql)
+        {
+            SqlConnection connection = new SqlConnection(connetionString);
+
+            connection.Open();
+
+            SqlCommand command = new SqlCommand(sql, connection);
+            SqlDataReader dataReader = command.ExecuteReader();
+
+            string response = WriteResponse(dataReader);
+
+            connection.Close();
+
+            return response;
+        }
         
         // create string with response from data readere
         private static string WriteResponse(SqlDataReader dataReader)
@@ -86,17 +108,33 @@ namespace WebApplication1
             try
             {
                 this.addHeader(app);
-                string response = this.ConnectAndGetResponse(connetionString, sql);
 
+                
+                // if method is PUT
                 
                 app.MapWhen(context => context.Request.Method == "PUT", mapApp =>
                 {
                     mapApp.Run(async context =>
                     {
-                        await context.Response.WriteAsync(context.Request.Form["id"]);
+                        this.ConnectAndUpdate(connetionString, // update database
+                            this.BuildUpdateQuery(
+                                context.Request.Form["id"], 
+                                context.Request.Form["firstName"],
+                                context.Request.Form["lastName"], 
+                                context.Request.Form["pesel"]
+                            )
+                        );
+                        
+                        await context.Response.WriteAsync("<status>Accepted</status>");
+                        
                     });
                 });
                 
+               
+                // if method is not equal PUT
+                
+                string response = this.ConnectAndGetResponse(connetionString, sql);
+               
                 app.Run(async (context) => { await context.Response.WriteAsync(response); });
             }
             catch (Exception ex)
