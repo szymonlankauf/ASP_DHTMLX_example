@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +16,7 @@ namespace WebApplication1
         {
             services.AddCors();
         }
-        
+
         // Appdend "Content-Type: application/xml" header
         private void addHeader(IApplicationBuilder app)
         {
@@ -27,11 +25,35 @@ namespace WebApplication1
                 context.Response.OnStarting(() =>
                 {
                     context.Response.Headers.Add("Content-Type", "application/xml");
-//          context.Response.Headers.Add("Access-Control-Allow-Origin", "http://127.0.0.1:8080");
+//                    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                     return Task.FromResult(0);
                 });
                 await nextMiddleware();
             });
+        }
+
+        private string BuildUpdateQuery(string id, string firstName, string lastName, string pesel)
+        {
+//            UPDATE table_name
+//            SET column1 = value1, column2 = value2, ...
+//            WHERE condition; 
+            return "UPDATE Inventory SET firstName='"+firstName+"', lastName='"+lastName+"', pesel='"+pesel+"' WHERE id='"+id+"';";
+        }
+
+        private string ConnectAndUpdate(string connetionString, string sql)
+        {
+            SqlConnection connection = new SqlConnection(connetionString);
+
+            connection.Open();
+
+            SqlCommand command = new SqlCommand(sql, connection);
+            SqlDataReader dataReader = command.ExecuteReader();
+
+            string response = WriteResponse(dataReader);
+
+            connection.Close();
+
+            return response;
         }
         
         // create string with response from data readere
@@ -76,21 +98,47 @@ namespace WebApplication1
             
             app.UseCors(builder =>
                 builder.WithOrigins("*")
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                );
 
             string connetionString = "Data Source=localhost;Initial Catalog=PersonalDB;User ID=SA;Password=qqqqqqQ1";
-            string sql = "SELECT * FROM Inventory FOR XML RAW";
+            string sql = "SELECT id AS cell, firstName AS cell, lastName AS cell, pesel AS cell FROM Inventory AS row FOR XML AUTO, ROOT('rows'), ELEMENTS";
 
             try
             {
                 this.addHeader(app);
-                string response = this.ConnectAndGetResponse(connetionString, sql);
 
+                
+                // if method is PUT
+                
+                app.MapWhen(context => context.Request.Method == "PUT", mapApp =>
+                {
+                    mapApp.Run(async context =>
+                    {
+                        this.ConnectAndUpdate(connetionString, // update database
+                            this.BuildUpdateQuery(
+                                context.Request.Form["id"], 
+                                context.Request.Form["firstName"],
+                                context.Request.Form["lastName"], 
+                                context.Request.Form["pesel"]
+                            )
+                        );
+                        
+                        await context.Response.WriteAsync("<status>Accepted</status>");
+                        
+                    });
+                });
+                
+               
+                // if method is not equal PUT
+                
+                string response = this.ConnectAndGetResponse(connetionString, sql);
+               
                 app.Run(async (context) => { await context.Response.WriteAsync(response); });
             }
             catch (Exception ex)
             {
-//        Console.WriteLine("Can not open connection! ");
                 app.Run(async (context) => { await context.Response.WriteAsync("Can not open connection! "); });
             }
             
