@@ -7,7 +7,7 @@ cd WebApplication1;
 dotnet run
 ```
 
-You can observe app exposed on port 5000
+You can observe app exposed on port 5000. Execution of
 
 ```
 http localhost:5000
@@ -18,24 +18,46 @@ gives proper xml document
 ```
 HTTP/1.1 200 OK
 Content-Type: application/xml
-Date: Sat, 28 Apr 2018 13:14:13 GMT
+Date: Mon, 30 Apr 2018 08:30:47 GMT
 Server: Kestrel
 Transfer-Encoding: chunked
 
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <row firstName="Jan" id="1" lastName="Kowalski" pesel="12345678901" />
-    <row firstName="Katarzyna" id="2" lastName="Kwiatkowska" pesel="32165409876" />
+    <rows>
+        <row>
+            <cell>1</cell>
+            <cell>Jan</cell>
+            <cell>Kowalski</cell>
+            <cell>12345678901</cell>
+        </row>
+        <row>
+            <cell>2</cell>
+            <cell>Test</cell>
+            <cell>User</cell>
+            <cell>22</cell>
+        </row>
+    </rows>
 </root>
 ```
 
-[![backend.png](https://s14.postimg.cc/l9jfnnrc1/Zrzut_ekranu_z_2018-04-28_16-29-39.png)](https://postimg.cc/image/bozt0s1zx/)
-
 To update data in backend you need send PUT requst like this:
 
-http -vf PUT http://localhost:5000 id=5 firstName="Szymon" lastName="Lankauf" pesel="15245698536"
+http -f PUT http://localhost:5000 id=5 firstName="Exemplay" lastName="Data" pesel="15245698536"
 
-Now backend only sends back ID. Saving data to database will be introduced in future.
+Backend should return response
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/xml
+Date: Mon, 30 Apr 2018 08:33:30 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+
+<status>Accepted</status>
+```
+
+and update element with given id. To investigate request we used [`httpie`](https://httpie.org/).
 
 # Frontend
 
@@ -51,8 +73,7 @@ If you do not have http-server install it by `npm install -g http-server`
 
 You should see table like this
 
-[![frontend.png](https://s14.postimg.cc/u3ac541jl/Zrzut_ekranu_z_2018-04-28_16-25-18.png)](https://postimg.cc/image/pu5m2xya5/)
-
+[![frontend.png](https://s14.postimg.cc/hqcnpba6p/Zrzut_ekranu_z_2018-04-30_10-28-45.png)](https://postimg.cc/image/wmb6wwll9/)
 
 # Database
 
